@@ -11,7 +11,9 @@ from umqtt.simple import MQTTClient
  
 # Initialize Pycoproc and sensors
 py = Pycoproc(Pycoproc.PYSENSE)
- 
+DEVICE_ID = "stavros"
+
+
 # Wi-Fi credentials
 WIFI_SSID = "asyrmata"
 WIFI_PASS = "pasiphae"
@@ -46,25 +48,32 @@ while not wlan.isconnected():
 print("Connected to WiFi\n")
  
 # MQTT client setup
-client = MQTTClient("stavros", MQTT_BROKER, port=MQTT_PORT)
+client = MQTTClient(DEVICE_ID, MQTT_BROKER, port=MQTT_PORT)
  
 # Function to send sensor metrics
 def sendMetrics():
     try:
-        client.publish("sensors/temperature", str(alt.temperature()))
-        client.publish("sensors/altitude", str(alt.altitude()))
-        client.publish("sensors/pressure", str(press.pressure()))
-        client.publish("sensors/humidity", str(dht.humidity()))
-        client.publish("sensors/light", str(li.light()))
-        client.publish("sensors/acceleration", str(acc.acceleration()))
-        client.publish("sensors/roll", str(acc.roll()))
-        client.publish("sensors/pitch", str(acc.pitch()))
-        client.publish("sensors/battery", str(py.read_battery_voltage()))
+        client.publish("sensors/temperature/"+DEVICE_ID, str(alt.temperature()))
+        client.publish("sensors/altitude/"+DEVICE_ID, str(alt.altitude()))
+        client.publish("sensors/pressure/"+DEVICE_ID, str(press.pressure()))
+        client.publish("sensors/humidity/"+DEVICE_ID, str(dht.humidity()))
+        client.publish("sensors/light/"+DEVICE_ID, str(li.light()))
+        client.publish("sensors/acceleration/"+DEVICE_ID, str(acc.acceleration()))
+        client.publish("sensors/roll/"+DEVICE_ID, str(acc.roll()))
+        client.publish("sensors/pitch/"+DEVICE_ID, str(acc.pitch()))
+        client.publish("sensors/battery/"+DEVICE_ID, str(py.read_battery_voltage()))
     except Exception as e:
         print("Failed to send metrics:", e)
  
 # Callback function for received MQTT messages
 def sub_cb(topic, msg):
+    topic = topic.decode()
+    msg = msg.decode()
+
+    #if topic ends with device id, then skip
+    if topic.endswith(DEVICE_ID):
+        return
+    
     print("Received:", topic.decode(), msg.decode())
  
 # Function to receive metrics
