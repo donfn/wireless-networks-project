@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "serial://dev/tty.usbmodemPyf7d1fc1",
+			"uri": "serial:///dev/tty.usbmodempyf7d1fc1/flash"
+		},
+		{
+			"name": "serial://dev/tty.usbmodemPyf7d1fc1",
+			"uri": "serial:///dev/tty.usbmodempyf7d1fc1/flash"
+		}
+	],
+	"settings": {}
+}
